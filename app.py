@@ -1,14 +1,15 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 import mysql.connector
 
 app = Flask(__name__)
 
 # Set up MySQL connection
 db = mysql.connector.connect(
-    host="localhost",
+    host="host.docker.internal",
     user="mj1",
     password="#Kinging16",
-    database="todolist"
+    database="todolist",
+    port=3306
 )
 cursor = db.cursor()
 
@@ -28,4 +29,4 @@ def add():
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
