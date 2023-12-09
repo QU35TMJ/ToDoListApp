@@ -61,8 +61,8 @@ jobs:
     - name: Assume IAM Role
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-region: $AWS_REGION
-        role-to-assume: $AWS_ROLE_TO_ASSUME
+        aws-region: ${{ env.AWS_REGION }}
+        role-to-assume: ${{env.AWS_ROLE_TO_ASSUME }}
         role-duration-seconds: 900
 
     - name: Upload to S3
