@@ -15,7 +15,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: nTSVvcNgi94i5OJzc9nh8jtwREnKMMfDajRMy+ys
       AWS_REGION: eu-north-1
       AWS_ROLE_TO_ASSUME: arn:aws:iam::715099660982:role/CICD-deploy
-      SSH_PRIVATE_KEY_PATH:|
+      SSH_PRIVATE_KEY_PATH: |
         -----BEGIN RSA PRIVATE KEY-----
         MIIEpAIBAAKCAQEAl6z3TgXjjTQJvdEiNksv+wJE5/ngvulxTjaU6KTGRF98n6Li
         7CKAG2IpVQaUJWnkPpL1svlZu86OXTxVeBbscyfhoy9syqw0BMeCVBlJVHx+hqkM
