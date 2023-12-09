@@ -84,7 +84,7 @@ jobs:
       with:
         aws-key: ${{ env.AWS_ACCESS_KEY_ID }}
         aws-secret: ${{ env.AWS_SECRET_ACCESS_KEY }}
-        src: 's3://todolist-1/tasks/'
+        src: 's3://$AWS_S3_BUCKET/tasks/'
         dest: 'deploy/'
 
     - name: Install dependencies on EC2
