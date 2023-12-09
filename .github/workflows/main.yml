@@ -82,6 +82,30 @@ jobs:
       AWS_S3_BUCKET: todolist-1
       AWS_ACCESS_KEY_ID: AKIA2M72C4K3LN72TRR5
       AWS_SECRET_ACCESS_KEY: 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
+      SSH_PRIVATE_KEY_PATH: |
+        -----BEGIN RSA PRIVATE KEY-----
+        MIIEpAIBAAKCAQEAl6z3TgXjjTQJvdEiNksv+wJE5/ngvulxTjaU6KTGRF98n6Li
+        7CKAG2IpVQaUJWnkPpL1svlZu86OXTxVeBbscyfhoy9syqw0BMeCVBlJVHx+hqkM
+        cuy7dcJORYgon69zHq+UDk/LHhVxezHanY4rgptKm9330lO0loO8edm7DQm/imTR
+        j0ow1Q/tt571ce6FBsJUfbgigtjGOsT/0FylAuckfcPAT3g6mKcSmTJ94ctQhr43
+        9r3c/L1ly06z3fqlCPmZG56AeRTCNf4WkjtK+bQUob20kiQckkx+MiBSfTyXgCH0
+        mLvPDCL0XiaJSPeiiy22wCNu9JJd8t2ypYTGHwIDAQABAoIBAQCH8VP6j1ajMVfl
+        1HK4fO01KZR+4jxogCy4sD0Iwt6dW4QERGbkxAtT/8gR2AKiAeW7m9YxokGmDX0V
+        3cSxDMLCd6VJsHDuuicpfXO3Uq6h1a9FnHB29O0Tn6KtuVrHvOYOQ8oMhcIEZa2/
+        gDBz9H/U4MCfMPQ0hCegm9Qq1lZLWOcIrtZwEfF5fHlYkJ5nNejLAo6B9u5BH4BU
+        lBBTgyxUqrYjB+WZHnBVODb9/Upr4UCwwJxYbePaDRaoYzzlSoHXgI48DN2Jew0b
+        Pqvx+rvX3AogK2R6Vi0tuS1oBNMVyqpYeuDuWBZGy7GUXCH71OoLJay9hKizvBKa
+        20UovoIBAoGBAMoETzY1MaZ/FaGJ6QmY6ak9k4+swo1Us8A2+CHCJqJQ5mD48WRD
+        lcTFV1p7LpXOM/k73VDOGgMbwmY1HaQn553GC/GynbvjZkmyRn8xwvSrvWO/zriQ
+        ua1ZfKdQh2Qmd9kcWKTDbZZkWAdos9D7ktQ5LbspUl82kE4gzW7eovsfAoGBAMA0
+        4tvUFzeqnG4XDD29f+IxX8iwP6aEZmrRFxSP0bXMgEP9DHGZFD9AtK1s8BQ6tl1u
+        6mqn9Pqa88B6GmSPWFU3t5dBfHdGvN0RK35/PaUqK3O/j+Ak8z8uZOH3whXsH3gU
+        57sRO0lLuXk3VmyyATUEpXdsiQ/hRZDBdqUG79UBAoGBAMmvFboDz2bvF5Rnz/1h
+        6V2qeSiGjNF2z+JFvuJNKC8C343O24iDJQIHFtfhhTfQXvkjuCeVLEkQLLvHqaka
+        odVVRNVvwqQzOgq3bkRMVNvancD5XJPNAWK8pYORFSp6cUqTTzhnV4A++9ehw2wP
+        zZ4M28gwT+l42wb1HsPiiAp3AoGACn5YrFvF8LoV1ETZ3D0OUFEVw6UrtHGiDc7g
+        jbTUZDKIBi44kbMj0dg8hQNfkBssfalijvQggdYX3LhN3JOe5Pgnw9BFdVWdVgxr
+        7XoQ6YWF3cnllv0tcpOb2mJmbD/579pkVGg6bmP9+ko1I7YMLtLUHdMFIKLR43d
 
 
     steps:
@@ -93,14 +117,20 @@ jobs:
         src: 's3://${{ env.AWS_S3_BUCKET }}/tasks/'
         dest: 'deploy/'
 
+    - name: Set up SSH key
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ env.SSH_PRIVATE_KEY_PATH }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+
     - name: Install dependencies on EC2
       run: |
-        ssh -o StrictHostKeyChecking=no -i ${{ env.SSH_PRIVATE_KEY_PATH }} ubuntu@ec2-13-53-208-203.eu-north-1.compute.amazonaws.com "sudo apt-get update && sudo apt-get install -y python3-pip"
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@ec2-13-53-208-203.eu-north-1.compute.amazonaws.com "sudo apt-get update && sudo apt-get install -y python3-pip"
     
     - name: Copy files to EC2
       run: |
-        scp -o StrictHostKeyChecking=no -i ${{ env.SSH_PRIVATE_KEY_PATH }} -r deploy/* ubuntu@ec2-13-53-208-203.eu-north-1.compute.amazonaws.com:/path/to/deploy/
+        scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -r deploy/* ubuntu@ec2-13-53-208-203.eu-north-1.compute.amazonaws.com:/path/to/deploy/
     
     - name: Restart Flask App on EC2
       run: |
-        ssh -o StrictHostKeyChecking=no -i ${{ env.SSH_PRIVATE_KEY_PATH }} ubuntu@ec2-13-53-208-203.eu-north-1.compute.amazonaws.com "cd /path/to/deploy/ && nohup python3 app.py > app.log 2>&1 &"
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@ec2-13-53-208-203.eu-north-1.compute.amazonaws.com "cd /path/to/deploy/ && nohup python3 app.py > app.log 2>&1 &"
