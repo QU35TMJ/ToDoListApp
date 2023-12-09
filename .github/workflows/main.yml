@@ -58,18 +58,18 @@ jobs:
 #        echo "AWS_REGION: $AWS_REGION"
 #        echo "AWS_ROLE_TO_ASSUME: $AWS_ROLE_TO_ASSUME"
 
-    - name: Assume IAM Role
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-region: ${{ env.AWS_REGION }}
-        role-to-assume: ${{env.AWS_ROLE_TO_ASSUME }}
-        role-duration-seconds: 900
+#    - name: Assume IAM Role
+#      uses: aws-actions/configure-aws-credentials@v1
+#      with:
+#        aws-region: ${{ env.AWS_REGION }}
+#        role-to-assume: ${{env.AWS_ROLE_TO_ASSUME }}
+#        role-duration-seconds: 900
 
     - name: Upload to S3
       uses: jakejarvis/s3-sync-action@v0.5.1
       with:
-        aws-key: $AWS_ACCESS_KEY_ID
-        aws-secret: $AWS_SECRET_ACCESS_KEY
+        aws-key: ${{ env.AWS_ACCESS_KEY_ID }}
+        aws-secret: ${{ env.AWS_SECRET_ACCESS_KEY }}
         src: '.'  
         dest: 's3://todolist-1/tasks/'
 
@@ -82,19 +82,19 @@ jobs:
     - name: Download artifacts from S3
       uses: jakejarvis/s3-sync-action@v0.5.1
       with:
-        aws-key: $AWS_ACCESS_KEY_ID
-        aws-secret: $AWS_SECRET_ACCESS_KEY
+        aws-key: ${{ env.AWS_ACCESS_KEY_ID }}
+        aws-secret: ${{ env.AWS_SECRET_ACCESS_KEY }}
         src: 's3://todolist-1/tasks/'
         dest: 'deploy/'
 
     - name: Install dependencies on EC2
       run: |
-        ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY_PATH }} ubuntu@ec2-13-53-208-203.eu-north-1.compute.amazonaws.com "sudo apt-get update && sudo apt-get install -y python3-pip"
+        ssh -o StrictHostKeyChecking=no -i ${{ env.SSH_PRIVATE_KEY_PATH }} ubuntu@ec2-13-53-208-203.eu-north-1.compute.amazonaws.com "sudo apt-get update && sudo apt-get install -y python3-pip"
     
     - name: Copy files to EC2
       run: |
-        scp -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY_PATH }} -r deploy/* ubuntu@ec2-13-53-208-203.eu-north-1.compute.amazonaws.com:/path/to/deploy/
+        scp -o StrictHostKeyChecking=no -i ${{ env.SSH_PRIVATE_KEY_PATH }} -r deploy/* ubuntu@ec2-13-53-208-203.eu-north-1.compute.amazonaws.com:/path/to/deploy/
     
     - name: Restart Flask App on EC2
       run: |
-        ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY_PATH }} ubuntu@ec2-13-53-208-203.eu-north-1.compute.amazonaws.com "cd /path/to/deploy/ && nohup python3 app.py > app.log 2>&1 &"
+        ssh -o StrictHostKeyChecking=no -i ${{ env.SSH_PRIVATE_KEY_PATH }} ubuntu@ec2-13-53-208-203.eu-north-1.compute.amazonaws.com "cd /path/to/deploy/ && nohup python3 app.py > app.log 2>&1 &"
