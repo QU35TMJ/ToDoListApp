@@ -78,6 +78,10 @@ jobs:
 
     needs: build
 
+    env:
+      AWS_S3_BUCKET: todolist-1
+
+
     steps:
     - name: Download artifacts from S3
       uses: jakejarvis/s3-sync-action@v0.5.1
