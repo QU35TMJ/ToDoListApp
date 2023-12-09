@@ -22,6 +22,13 @@ jobs:
         sudo apt-get install -y python3-pip
         pip3 install -r requirements.txt
 
+    - name: Assume IAM Role
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-region: ${{ secrets.AWS_REGION }}
+        role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+        role-duration-seconds: 900
+
     - name: Upload to S3
       uses: jakejarvis/s3-sync-action@v0.5.1
       with:
