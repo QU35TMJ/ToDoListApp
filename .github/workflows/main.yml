@@ -46,6 +46,9 @@ jobs:
       SSH_PRIVATE_KEY_PATH: 'todolist.pem'
 
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
       - name: Download artifacts from S3
         uses: jakejarvis/s3-sync-action@v0.5.1
         with:
