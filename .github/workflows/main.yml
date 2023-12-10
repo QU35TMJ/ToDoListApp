@@ -56,7 +56,7 @@ jobs:
       AWS_S3_BUCKET: todolist-1
       AWS_ACCESS_KEY_ID: AKIA2M72C4K3LN72TRR5
       AWS_SECRET_ACCESS_KEY: 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
-      SSH_PRIVATE_KEY_PATH: 'ToDoListApp/todolist.pem'
+      SSH_PRIVATE_KEY_PATH: 'todolist.pem'
 
 
 #      SSH_PRIVATE_KEY: |
