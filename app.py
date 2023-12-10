@@ -5,7 +5,8 @@ app = Flask(__name__)
 
 # Set up MySQL connection
 db = mysql.connector.connect(
-    host="host.docker.internal",
+#    host="host.docker.internal",
+    host="127.0.0.1",
     user="mj1",
     password="#Kinging16",
     database="todolist",
