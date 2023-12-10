@@ -57,11 +57,11 @@ jobs:
           src: 's3://${{ env.AWS_S3_BUCKET }}/tasks/'
           dest: 'deploy/'
 
-      - name: Display Repository Content
+      - name: Display Repository Content #check repo pwd
         run: ls -la
 
-      - name: Display SSH Private Key
-        run: cat ${{ env.SSH_PRIVATE_KEY_PATH }}
+      - name: Set permissions for SSH private key
+        run: chmod 600 ${{ env.SSH_PRIVATE_KEY_PATH }}
 
       - name: Install dependencies on EC2
         run: |
