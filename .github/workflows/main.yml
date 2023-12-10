@@ -98,6 +98,14 @@ jobs:
         src: 's3://${{ env.AWS_S3_BUCKET }}/tasks/'
         dest: 'deploy/'
 
+   - name: Display Repository Content
+     run: ls -la
+
+   - name: Display SSH Private Key
+     run: cat ${{ env.SSH_PRIVATE_KEY_PATH }}
+
+
+
 #    - name: Set up SSH key
 #      run: |
 #        mkdir -p ~/.ssh
